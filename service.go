@@ -18,7 +18,7 @@
 //	import (
 //		"log"
 //
-//		"github.com/kardianos/service"
+//		"github.com/nezhahq/service"
 //	)
 //
 //	var logger service.Logger
@@ -59,7 +59,7 @@
 //			logger.Error(err)
 //		}
 //	}
-package service // import "github.com/kardianos/service"
+package service // import "github.com/nezhahq/service"
 
 import (
 	"errors"
@@ -420,6 +420,14 @@ func Control(s Service, action string) error {
 		err = s.Restart()
 	case ControlAction[3]:
 		err = s.Install()
+		if err != nil {
+			return fmt.Errorf("Failed to %s %v: %v", action, s, err)
+		} else {
+			err = s.Restart()
+			if err != nil {
+				return fmt.Errorf("Failed to %s %v: %v", action, s, err)
+			}
+		}
 	case ControlAction[4]:
 		err = s.Uninstall()
 	default:
