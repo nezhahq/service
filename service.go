@@ -444,6 +444,7 @@ func Control(s Service, action string) error {
 	if err != nil {
 		return fmt.Errorf("Failed to %s %v: %v", action, s, err)
 	}
+	fmt.Println("Successfully executed %s action!", action)
 	return nil
 }
 
