@@ -421,21 +421,30 @@ func Control(s Service, action string) error {
 	case ControlAction[3]:
 		err = s.Install()
 		if err != nil {
-			return fmt.Errorf("Failed to %s %v: %v", action, s, err)
+			return fmt.Errorf("Failed to install %v: %v", s, err)
 		} else {
 			err = s.Restart()
 			if err != nil {
-				return fmt.Errorf("Failed to %s %v: %v", action, s, err)
+				return fmt.Errorf("Failed to restart %v: %v", s, err)
 			}
 		}
 	case ControlAction[4]:
-		err = s.Uninstall()
+		err = s.Stop()
+		if err != nil {
+			return fmt.Errorf("Failed to stop %v: %v", s, err)
+		} else {
+			err = s.Uninstall()
+			if err != nil {
+				return fmt.Errorf("Failed to uninstall %v: %v", s, err)
+			}
+		}
 	default:
 		err = fmt.Errorf("Unknown action %s", action)
 	}
 	if err != nil {
 		return fmt.Errorf("Failed to %s %v: %v", action, s, err)
 	}
+	fmt.Println("Successfully executed %s action!", action)
 	return nil
 }
 
