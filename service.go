@@ -64,6 +64,7 @@ package service // import "github.com/nezhahq/service"
 import (
 	"errors"
 	"fmt"
+	"log"
 )
 
 const (
@@ -423,28 +424,21 @@ func Control(s Service, action string) error {
 		if err != nil {
 			return fmt.Errorf("Failed to install %v: %v", s, err)
 		} else {
-			err = s.Restart()
+			err = s.Start()
 			if err != nil {
-				return fmt.Errorf("Failed to restart %v: %v", s, err)
+				return fmt.Errorf("Failed to start %v: %v", s, err)
 			}
 		}
 	case ControlAction[4]:
-		err = s.Stop()
-		if err != nil {
-			return fmt.Errorf("Failed to stop %v: %v", s, err)
-		} else {
-			err = s.Uninstall()
-			if err != nil {
-				return fmt.Errorf("Failed to uninstall %v: %v", s, err)
-			}
-		}
+		s.Stop()
+		err = s.Uninstall()
 	default:
 		err = fmt.Errorf("Unknown action %s", action)
 	}
 	if err != nil {
 		return fmt.Errorf("Failed to %s %v: %v", action, s, err)
 	}
-	fmt.Println("Successfully executed %s action!", action)
+	log.Printf("Successfully executed action %s!", action)
 	return nil
 }
 
