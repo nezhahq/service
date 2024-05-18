@@ -228,6 +228,7 @@ command={{.Path|cmdEscape}}
 command_args="{{range .Arguments}}{{.}} {{end}}"
 {{- end }}
 name=$(basename $(readlink -f $command))
+{{if .WorkingDirectory}}directory="{{.WorkingDirectory}}"{{end}}
 supervise_daemon_args="--stdout {{.LogDirectory}}/${name}.log --stderr {{.LogDirectory}}/${name}.err"
 
 {{range $k, $v := .EnvVars -}}
