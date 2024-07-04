@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"text/template"
 )
@@ -77,6 +78,9 @@ func (s *freebsdService) template() *template.Template {
 				return "true"
 			}
 			return "false"
+		},
+		"replaceHyphen": func(s string) string {
+			return strings.ReplaceAll(s, "-", "_")
 		},
 	}
 
@@ -215,11 +219,12 @@ var rcScript = `#!/bin/sh
 
 . /etc/rc.subr
 
-name="{{.Name}}"
-{{.Name}}_env="IS_DAEMON=1"
+name="{{.Name|replaceHyphen}}"
+{{.Name|replaceHyphen}}_env="IS_DAEMON=1"
+{{if .WorkingDirectory}}{{.Name|replaceHyphen}}_chdir="{{.WorkingDirectory}}"{{end}}
 pidfile="/var/run/${name}.pid"
 command="/usr/sbin/daemon"
-daemon_args="-P ${pidfile} -r -t \"${name}: daemon\"{{if .WorkingDirectory}} -c {{.WorkingDirectory}}{{end}}"
+daemon_args="-P ${pidfile} -r -t \"${name}: daemon\" -f"
 command_args="${daemon_args} {{.Path}}{{range .Arguments}} {{.}}{{end}}"
 
 run_rc_command "$1"
