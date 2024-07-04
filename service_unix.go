@@ -20,7 +20,7 @@ import (
 const defaultLogDirectory = "/var/log"
 
 func newSysLogger(name string, errs chan<- error) (Logger, error) {
-	w, err := syslog.New(syslog.LOG_INFO, name)
+	w, err := syslog.New(syslog.LOG_DAEMON|syslog.LOG_INFO, name)
 	if err != nil {
 		return nil, err
 	}
