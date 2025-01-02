@@ -15,12 +15,14 @@ import (
 	"log/syslog"
 	"os/exec"
 	"syscall"
+
+	"github.com/nezhahq/xsyslog"
 )
 
 const defaultLogDirectory = "/var/log"
 
 func newSysLogger(name string, errs chan<- error) (Logger, error) {
-	w, err := syslog.New(syslog.LOG_DAEMON|syslog.LOG_INFO, name)
+	w, err := xsyslog.New(syslog.LOG_DAEMON|syslog.LOG_INFO, name)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +30,7 @@ func newSysLogger(name string, errs chan<- error) (Logger, error) {
 }
 
 type sysLogger struct {
-	*syslog.Writer
+	*xsyslog.Writer
 	errs chan<- error
 }
 
